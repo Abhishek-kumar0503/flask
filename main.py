@@ -11,16 +11,21 @@ base_url = f"https://api.telegram.org/bot{bot_token}/"
 def get_chat_id(update):
     return update["message"]["chat"]["id"]
 
+def is_valid_url(url):
+    return re.match(r'^(http|https)://', url) is not None
+
 def read_msg(update):
-    message_text = update["message"].get("text")
+    message_text = update.get("message", {}).get("text")
     chat_id = get_chat_id(update)
-    if message_text:
-        recording_id = re.search(r'recordingId=(\d+)', message_text)
+    if message_text and is_valid_url(message_text):
+        response = requests.get(message_text)
+        message = response.url
+        recording_id = re.search(r'recordingId=(\d+)', message)
         if recording_id:
             v = recording_id.group(1)
             send_msg(chat_id, f"https://static.smpopular.com/production/uploading/recordings/{v}/master.mp4")
-        else:
-            send_msg(chat_id, "Invalid or missing recording ID. Please provide a valid link.")
+    else:
+        send_msg(chat_id, "Invalid or missing recording ID. Please provide a valid link.")
 
 def send_msg(chat_id, text):
     if chat_id:
@@ -28,7 +33,7 @@ def send_msg(chat_id, text):
             "chat_id": chat_id,
             "text": text if text else "This URL will not exist. Please check it."
         }
-        resp = requests.post(base_url + "sendMessage", data=parameter)
+        requests.post(base_url + "sendMessage", data=parameter)
 
 @app.route("/webhook", methods=["POST","GET"])
 def webhook():
