@@ -24,7 +24,7 @@ def read_msg(update):
         if recording_id:
             v = recording_id.group(1)
             video_url = f"https://static.smpopular.com/production/uploading/recordings/{v}/master.mp4"
-                send_video(chat_id, video_url)
+            send_video(chat_id, video_url)
     else:
         send_msg(chat_id, "Invalid or missing recording ID. Please provide a valid link.")
 
