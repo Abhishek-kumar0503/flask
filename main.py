@@ -34,17 +34,17 @@ def send_msg(chat_id, text):
             "chat_id": chat_id,
             "text": text if text else "This URL will not exist. Please check it."
         }
-        requests.post(base_url + "sendMessage", data=parameter)
+        requests.post(base_url + "/sendMessage", data=parameter)
 
 def send_video(chat_id, video_url):
     if chat_id:
         parameter = {
-            "chat_id": chat_id,
+            "chat_id": chat_id
         }
         files = {
             "video": requests.get(video_url).content
         }
-        resp = requests.post(base_url + "/sendVideo", data=parameter, files=files)
+        requests.post(base_url + "/sendVideo", data=parameter, files=files)
         
 @app.route("/webhook", methods=["POST","GET"])
 def webhook():
