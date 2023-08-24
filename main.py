@@ -57,7 +57,7 @@ def send_video(chat_id, video_url):
 def is_valid_url(url):
     return re.match(r'^https?://', url) is not None
 
-@app.route("/webhook", methods=["POST"])
+@app.route("/webhook", methods=["POST","GET"])
 def webhook():
     if request.method == "POST":
         update = request.json
